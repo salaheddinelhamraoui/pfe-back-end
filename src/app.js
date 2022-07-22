@@ -1,6 +1,6 @@
 require("dotenv").config();
 const http = require("http");
-const app = require("../config/server");
+const app = require("./config/server");
 
 const ENV = process.env;
 
