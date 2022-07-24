@@ -3,6 +3,8 @@ const { Schema } = require("mongoose");
 
 const userSchema = new Schema(
   {
+    role: { type: String, default: "USER" },
+    salt: String,
     from: String,
     password: { type: String, required: true },
     data: {
