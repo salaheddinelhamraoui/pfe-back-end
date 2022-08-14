@@ -63,6 +63,11 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
+  if (!req.body.email || !req.body.password) {
+    return res.status(404).json({
+      message: "Invalide data",
+    });
+  }
   try {
     const { email, password } = req.body;
     const isValidEmail = verifyEmail(email);
@@ -80,28 +85,30 @@ async function login(req, res) {
         message: "Invalide email",
       });
     }
-    User.findOne({ "data.email": email }).exec((err, result) => {
+    User.findOne({ "data.email": email }).exec((err, user) => {
       if (err) {
         return res.status(500).json({
           error: err,
         });
       }
-      if (!result) {
+      if (!user) {
         return res.status(404).json({
           message: `User not found with email: ${email}`,
         });
       }
-      if (result && bcrypt.compareSync(password, result.password)) {
-        const token =
-          "Bearer " +
-          jwt.sign(
-            { userId: result._id, email, role: result.role },
-            process.env.SECRET_KEY,
-            {
-              expiresIn: "7d",
-            }
-          );
-        return res.send(token);
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = jwt.sign(
+          { userId: user._id, email, role: user.role },
+          process.env.SECRET_KEY,
+          {
+            expiresIn: "7d",
+          }
+        );
+
+        return res.send({
+          access_token: token,
+          user,
+        });
       }
       return res.status(404).json({
         message: "Invalide password",
