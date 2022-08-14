@@ -8,6 +8,7 @@ function startServer() {
   const server = http.createServer(app);
   server.listen(ENV.PORT || 5000, () => {
     console.log(`Listening to PORT => ${ENV.PORT || 5000}`);
+    console.log(new Date());
   });
 }
 
