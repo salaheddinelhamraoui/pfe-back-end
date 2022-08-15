@@ -13,36 +13,31 @@ function verifyPassword(password) {
   if (!password.match(lowerCaseLetters)) {
     return {
       verified: false,
-      msg: "Password must containe lower case letter",
+      msg: 'Password must containe lower case letter',
     };
   }
   if (!password.match(upperCaseLetters)) {
     return {
       verified: false,
-      msg: "Password must containe one upper case letter",
+      msg: 'Password must containe one upper case letter',
     };
   }
-  if (!password.match(numbers)) {
-    return {
-      verified: false,
-      msg: "Password must containe number",
-    };
-  }
+
   if (!password.match(specialCharacter)) {
     return {
       verified: false,
-      msg: "Password must containe special character",
+      msg: 'Password must containe special character',
     };
   }
   if (password.length < 8) {
     return {
       verified: false,
-      msg: "Password must contain at least 8 characters",
+      msg: 'Password must contain at least 8 characters',
     };
   }
   return {
     verified: true,
-    msg: "Succed",
+    msg: 'Succed',
   };
 }
 

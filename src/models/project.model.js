@@ -1,19 +1,19 @@
-const mongoose = require("mongoose");
-const { Schema } = require("mongoose");
+const mongoose = require('mongoose');
+const { Schema } = require('mongoose');
 
 const projectSchema = new Schema(
   {
     creator_id: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     freelancer_id: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     company_id: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     project_name: {
       type: String,
@@ -29,6 +29,6 @@ const projectSchema = new Schema(
   { timestamps: true }
 );
 
-const Project = mongoose.model("Project", projectSchema);
+const Project = mongoose.model('Project', projectSchema);
 
 module.exports = Project;

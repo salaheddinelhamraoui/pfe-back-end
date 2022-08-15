@@ -1,5 +1,5 @@
-const Project = require("../models/project.model");
-const { ObjectId } = require("mongodb");
+const Project = require('../models/project.model').default;
+const { ObjectId } = require('mongodb');
 
 function addProject(req, res) {
   const { creator_id, freelancer_id, company_id } = req.body;
@@ -14,7 +14,7 @@ function addProject(req, res) {
       return res.status(400).json(err);
     }
     return res.status(200).json({
-      message: "Project saved",
+      message: 'Project saved',
       result,
     });
   });

@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-const { Schema } = require("mongoose");
+const mongoose = require('mongoose');
+const { Schema } = require('mongoose');
 
 const userSchema = new Schema(
   {
-    role: { type: String, default: "USER" },
+    role: { type: String, default: 'USER' },
     salt: String,
     from: String,
     password: { type: String, required: true },
     data: {
       displayName: { type: String, required: true },
-      photoUrl: String,
+      photoURL: String,
       email: { type: String, required: true, unique: true },
       settings: {
         layout: String,
@@ -20,6 +20,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
