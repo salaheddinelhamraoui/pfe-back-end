@@ -13,22 +13,28 @@ const register = async (req, res) => {
       !req.body.password ||
       !req.body.role ||
       !req.body.data.email ||
-      !req.body.data.displayName ||
-      !req.body.data.photoURL
+      !req.body.data.displayName
     ) {
       return res.status(400).json({
         message: 'Invalide data',
       });
     }
 
-    const image = req.body.data.photoURL;
-    const uploadResponse = await cloudinary.uploader.upload(image, {
-      upload_preset: 'avatars',
-    });
+    let photoURL = '';
 
-    const photoURL = uploadResponse.url;
+    if (req.body.data.photoURL) {
+      const image = req.body.data.photoURL;
+      const uploadResponse = await cloudinary.uploader.upload(image, {
+        upload_preset: 'avatars',
+      });
 
-    const { data, password, role } = req.body;
+      photoURL = uploadResponse.url;
+    } else {
+      photoURL =
+        'https://monstar-lab.com/global/wp-content/uploads/sites/11/2019/04/male-placeholder-image.jpeg';
+    }
+
+    const { data, password, role, category } = req.body;
     const { displayName, email } = data;
 
     const salt = await bcrypt.genSalt(10);
@@ -66,6 +72,7 @@ const register = async (req, res) => {
         role,
         salt,
         password: hashedPassword,
+        category,
         data: {
           displayName: displayName || '',
           email,
