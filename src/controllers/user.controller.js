@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const { ObjectId } = require("mongodb");
+const { response } = require("../config/server");
 
 function addUser(req, res) {
   const user = new User({
@@ -42,8 +43,19 @@ function findUser(req, res) {
   }
 }
 
-function findAllUsers(_, res) {
-  User.find((err, result) => {
+function findAllUsers(req, res) {
+  if (!req.query.role) {
+    User.find((err, result) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.status(200).json({
+        message: "Users found",
+        result,
+      });
+    });
+  }
+  User.find({ role: req.query.role }, (err, result) => {
     if (err) {
       return res.status(500).json(err);
     }
