@@ -8,6 +8,7 @@ const authRouter = require("../routes/auth.router");
 const testRouter = require("../routes/test.router");
 const projectRouter = require("../routes/project.router");
 const statisticRouter = require("../routes/statistic.router");
+const sessionRouter = require("../routes/session.router");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(userRouter);
 app.use(authRouter);
 app.use(testRouter);
 app.use(projectRouter);
+app.use(sessionRouter);
 app.use(statisticRouter);
 
 module.exports = app;

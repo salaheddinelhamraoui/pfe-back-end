@@ -1,24 +1,62 @@
 const User = require("../models/user.model");
 const Project = require("../models/project.model");
+const Session = require("../models/session.model");
+const moment = require("moment");
 
-async function getStatistic(_, res) {
-  const result = {
-    freelancer: "",
-    companies: "",
-    projects: "",
-  };
+function getStatistic(_, res) {
+  const freelancers = User.find({ role: "FREELANCER" }).count().exec();
+  const companies = User.find({ role: "COMPANY" }).count().exec();
+  const projects = Project.find().count().exec();
+  const sessions = Session.find({ state: "FINISHED" }).exec();
 
-  var freelancers = User.find({ role: "FREELANCER" }).count().exec();
-  var companies = User.find({ role: "COMPANY" }).count().exec();
-  var projects = Project.find().count().exec();
-
-  Promise.all([freelancers, companies, projects]).then(function (counts) {
+  Promise.all([freelancers, companies, projects, sessions]).then(function (
+    result
+  ) {
     res.status(200).json({
-      freelancer: counts[0],
-      companies: counts[1],
-      projects: counts[2],
+      freelancer: result[0],
+      companies: result[1],
+      projects: result[2],
+      finishedTasksOfCurrentWeek: getFinishedTasksOfCurrentWeek(result[3]),
     });
   });
+}
+
+function getFinishedTasksOfCurrentWeek(sessions) {
+  const firstDayOfWeek = moment().startOf("isoWeek").valueOf();
+  const lastDayOfWeek = moment().endOf("isoWeek").valueOf();
+  const finishedSessions = [];
+  sessions.map((session) => {
+    const sessionDate = moment(session.date).valueOf();
+    if (sessionDate > firstDayOfWeek && sessionDate < lastDayOfWeek) {
+      return finishedSessions.push(session);
+    }
+    return;
+  });
+
+  return {
+    countTasksCurrentWeek: finishedSessions.length,
+    countTasksCurrentWeekPerDay:
+      getFinishedTasksForEveryDayOfCurrentWeek(finishedSessions),
+  };
+}
+
+function getFinishedTasksForEveryDayOfCurrentWeek(sessions) {
+  const sessionsPerDay = {
+    Monday: [],
+    Tuesday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
+    Sunday: [],
+  };
+
+  sessions.map((session) => {
+    const sessionDate = moment(session.date).format("dddd");
+    sessionsPerDay[sessionDate] = [...sessionsPerDay[sessionDate], session];
+  });
+
+  return sessionsPerDay;
 }
 
 module.exports = { getStatistic };
