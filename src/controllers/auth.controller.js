@@ -124,39 +124,41 @@ const login = (req, res) => {
 };
 
 const signInWithToken = (req, res) => {
-  var decoded = jwt_decode(req.body.token);
+  try {
+    var decoded = jwt_decode(req.body.token);
 
-  User.findOne({ 'data.email': email }).exec((err, user) => {
-    if (err) {
-      return res.status(500).json({
-        error: err,
-      });
-    }
+    const email = decoded.email;
 
-    if (!user) {
-      return res.status(401).json({
-        message: `User not found with email: ${email}`,
-      });
-    }
-    if (user) {
-      const token = jwt.sign(
-        { userId: user._id, email, role: user.role },
-        process.env.SECRET_KEY,
-        {
-          expiresIn: '7d',
-        }
-      );
+    User.findOne({ 'data.email': email }).exec((err, user) => {
+      if (err) {
+        return res.status(500).json({
+          error: err,
+        });
+      }
 
-      return res.send({
-        access_token: token,
-        user,
-      });
-    }
-  });
+      if (!user) {
+        return res.status(401).json({
+          message: `User not found with email: ${email}`,
+        });
+      }
+      if (user) {
+        const token = jwt.sign(
+          { userId: user._id, email, role: user.role },
+          process.env.SECRET_KEY,
+          {
+            expiresIn: '7d',
+          }
+        );
 
-  return res.status(200).json({
-    message: decoded,
-  });
+        return res.send({
+          access_token: token,
+          user,
+        });
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = { register, login, signInWithToken };
