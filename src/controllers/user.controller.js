@@ -1,6 +1,5 @@
-const User = require("../models/user.model");
-const { ObjectId } = require("mongodb");
-const { response } = require("../config/server");
+const User = require('../models/user.model');
+const { ObjectId } = require('mongodb');
 
 function addUser(req, res) {
   const user = new User({
@@ -11,7 +10,7 @@ function addUser(req, res) {
       return res.status(400).json(err);
     }
     return res.status(200).json({
-      message: "User saved",
+      message: 'User saved',
       result,
     });
   });
@@ -26,18 +25,18 @@ function findUser(req, res) {
       }
       if (!result) {
         return res.status(404).json({
-          message: "User Not found by ID :" + userId,
+          message: 'User Not found by ID :' + userId,
           result,
         });
       }
       return res.status(200).json({
-        message: "User found",
+        message: 'User found',
         result,
       });
     });
   } catch (error) {
     return res.status(400).json({
-      message: "Invalide user id",
+      message: 'Invalide user id',
       error,
     });
   }
@@ -50,7 +49,7 @@ function findAllUsers(req, res) {
         return res.status(500).json(err);
       }
       return res.status(200).json({
-        message: "Users found",
+        message: 'Users found',
         result,
       });
     });
@@ -60,7 +59,7 @@ function findAllUsers(req, res) {
       return res.status(500).json(err);
     }
     return res.status(200).json({
-      message: "Users found",
+      message: 'Users found',
       result,
     });
   });
@@ -73,19 +72,19 @@ function updateUser(req, res) {
     User.findByIdAndUpdate(
       ObjectId(userId),
       user,
-      { returnDocument: "after" },
+      { returnDocument: 'after' },
       (err, result) => {
         if (err) {
           return res.status(400).json(err);
         }
         if (!result) {
           return res.status(404).json({
-            message: "User Not found by ID :" + userId,
+            message: 'User Not found by ID :' + userId,
             result,
           });
         }
         return res.status(200).json({
-          massege: "Upadated with success!",
+          massege: 'Upadated with success!',
           result,
         });
       }
