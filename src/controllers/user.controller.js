@@ -59,7 +59,7 @@ function findAllUsers(req, res) {
           count: result.length,
           size: Math.ceil(result.length / limit),
         },
-        result: result.slice(startIndex, endIndex),
+        result: page ? result.slice(startIndex, endIndex) : result,
       });
     });
   } else {
