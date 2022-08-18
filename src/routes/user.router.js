@@ -12,6 +12,6 @@ userRouter.post("/addUser", addUser);
 userRouter.get("/findUser/:userId", findUser);
 userRouter.get("/findAllUsers", findAllUsers);
 userRouter.put("/updateUser/:userId", updateUser);
-userRouter.delete("/deleteUser", deleteUser);
+userRouter.delete("/deleteUser/:userId", deleteUser);
 
 module.exports = userRouter;

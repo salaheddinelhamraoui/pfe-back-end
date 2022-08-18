@@ -6,7 +6,6 @@ async function isAuth(req, res, next) {
     const token = req.headers.authorization;
     var decoded = jwt_decode(req.body.token);
     const userId = decoded.userId;
-    console.log(token);
 
     jwt.verify(
       token.replace("Bearer ", ""),

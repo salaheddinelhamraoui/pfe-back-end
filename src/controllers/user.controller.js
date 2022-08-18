@@ -109,13 +109,24 @@ function updateUser(req, res) {
 }
 
 function deleteUser(req, res) {
-  const { userId } = req.body;
-  User.remove({ _id: ObjectId(userId) }, (err, result) => {
+  try{
+    const { userId } = req.params;
+  console.log(userId);
+
+  User.deleteOne({ _id: ObjectId(userId) }, (err, result) => {
+
     if (err) {
       return res.status(500).json(err);
     }
     return res.status(200).json({ message: "User deleted" });
   });
+} catch(err){
+  console.log(err);
+  
+      return res.status(404).json({ message: err });
+  }
+
+  
 }
 
 module.exports = {
