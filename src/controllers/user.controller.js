@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const { ObjectId } = require("mongodb");
+const { cloudinary } = require('../utils/cloudinary');
 
 function addUser(req, res) {
   const user = new User({
@@ -43,9 +44,13 @@ function findUser(req, res) {
 }
 
 function findAllUsers(req, res) {
-  let { page, role, limit } = req.query;
+  let { page, role, limit, userName } = req.query;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
+
+  if(!userName){
+    userName = '';
+  }
 
   if (!role) {
     // let users = "";
@@ -63,7 +68,7 @@ function findAllUsers(req, res) {
       });
     });
   } else {
-    User.find({ role }, (err, result) => {
+    User.find({ 'data.displayName' : {$regex: userName}, role}, (err, result) => {
       if (err) {
         return res.status(500).json(err);
       }
@@ -79,10 +84,61 @@ function findAllUsers(req, res) {
   }
 }
 
-function updateUser(req, res) {
-  const { userId } = req.params;
-  const user = req.body;
+
+function findUserByName(req, res){
+  
+  let userName  = req.body.userName;
+  const userRole = req.body.userRole;
+
+  if(!userName){
+    userName = '';
+  }
+ 
+  User.find({ 'data.displayName' : {$regex: userName}, role: userRole} , (err, result) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    return res.status(200).json({
+      message: "User found",
+      result,
+    });
+  });
+}
+
+async function updateUser(req, res) {
   try {
+    
+
+    let photoURL = '';
+
+    if (req.body.data.photoURL) {
+      const image = req.body.data.photoURL;
+      const uploadResponse = await cloudinary.uploader.upload(image, {
+        upload_preset: 'avatars',
+      });
+
+      photoURL = uploadResponse.url;
+    } else {
+      photoURL =
+        'https://monstar-lab.com/global/wp-content/uploads/sites/11/2019/04/male-placeholder-image.jpeg';
+    }
+
+    const { userId } = req.params;
+    const { data, password, role, category } = req.body;
+    const { displayName, email } = data;
+
+    const user = new User({
+      role,
+      password: hashedPassword,
+      category,
+      data: {
+        displayName: displayName || '',
+        email,
+        photoURL: photoURL || '',
+      },
+    });
+
+
     User.findByIdAndUpdate(
       ObjectId(userId),
       user,
@@ -135,4 +191,5 @@ module.exports = {
   findAllUsers,
   updateUser,
   deleteUser,
+  findUserByName
 };
