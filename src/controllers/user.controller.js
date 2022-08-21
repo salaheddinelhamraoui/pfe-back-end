@@ -81,7 +81,7 @@ function findAllUsers(req, res) {
             count: result.length,
             size: Math.ceil(result.length / limit),
           },
-          result: result.slice(startIndex, endIndex),
+          result: page ? result.slice(startIndex, endIndex) : result,
         });
       }
     );
@@ -112,7 +112,9 @@ function findUserByName(req, res) {
 
 async function updateUser(req, res) {
   try {
-    let photoURL = '';
+    let photoURL = null;
+
+    console.log(req.body);
 
     if (req.body.data.photoURL) {
       const image = req.body.data.photoURL;
@@ -121,14 +123,11 @@ async function updateUser(req, res) {
       });
 
       photoURL = uploadResponse.url;
-    } else {
-      photoURL =
-        'https://monstar-lab.com/global/wp-content/uploads/sites/11/2019/04/male-placeholder-image.jpeg';
     }
 
     const { userId } = req.params;
     const { data, category } = req.body;
-    const { displayName, email } = data;
+    const { displayName, email, photoLink } = data;
 
     User.findByIdAndUpdate(
       ObjectId(userId),
@@ -137,7 +136,7 @@ async function updateUser(req, res) {
           category,
           data: {
             displayName: displayName || '',
-            photoURL: photoURL || '',
+            photoURL: photoURL !== null ? photoURL : photoLink,
             email,
           },
         },
