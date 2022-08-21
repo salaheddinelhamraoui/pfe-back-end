@@ -1,5 +1,5 @@
-const Project = require("../models/project.model");
-const { ObjectId } = require("mongodb");
+const Project = require('../models/project.model');
+const { ObjectId } = require('mongodb');
 
 function addProject(req, res) {
   const { creator_id, freelancer_id, company_id } = req.body;
@@ -14,7 +14,7 @@ function addProject(req, res) {
       return res.status(400).json(err);
     }
     return res.status(200).json({
-      message: "Project saved",
+      message: 'Project saved',
       result,
     });
   });
@@ -29,18 +29,18 @@ function findProject(req, res) {
       }
       if (!result) {
         return res.status(404).json({
-          message: "Project Not found by ID :" + projectId,
+          message: 'Project Not found by ID :' + projectId,
           result,
         });
       }
       return res.status(200).json({
-        message: "Project found",
+        message: 'Project found',
         result,
       });
     });
   } catch (error) {
     return res.status(400).json({
-      message: "Invalide project ID",
+      message: 'Invalide project ID',
       error,
     });
   }
@@ -52,10 +52,10 @@ function findAllProjects(_, res) {
       return res.status(500).json(err);
     }
     return res.status(200).json({
-      message: "Projects found",
+      message: 'Projects found',
       result,
     });
-  });
+  }).populate('creator_id freelancer_id company_id');
 }
 
 function updateProject(req, res) {
@@ -65,19 +65,19 @@ function updateProject(req, res) {
     Project.findByIdAndUpdate(
       ObjectId(projectId),
       project,
-      { returnDocument: "after" },
+      { returnDocument: 'after' },
       (err, result) => {
         if (err) {
           return res.status(400).json(err);
         }
         if (!result) {
           return res.status(404).json({
-            message: "Projects Not found by ID :" + projectId,
+            message: 'Projects Not found by ID :' + projectId,
             result,
           });
         }
         return res.status(200).json({
-          massege: "Upadated with success!",
+          massege: 'Upadated with success!',
           result,
         });
       }
@@ -86,7 +86,6 @@ function updateProject(req, res) {
     return res.status(500).json(error);
   }
 }
-
 
 module.exports = {
   addProject,
