@@ -44,22 +44,20 @@ function findAllDocuments(req, res) {
   const endIndex = page * limit;
 
   if (!documentName) {
-    documentName = "";
-  }
-
-  Document.find((err, result) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
-    return res.status(200).json({
-      metadata: {
-        page,
-        count: result.length,
-        size: Math.ceil(result.length / limit),
-      },
-      result: page ? result.slice(startIndex, endIndex) : result,
+    Document.find((err, result) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.status(200).json({
+        metadata: {
+          page,
+          count: result.length,
+          size: Math.ceil(result.length / limit),
+        },
+        result: page ? result.slice(startIndex, endIndex) : result,
+      });
     });
-  });
+  } else return res.json("Put your logic Here ");
 }
 
 function findDocumentByName(req, res) {
