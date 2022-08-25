@@ -10,6 +10,6 @@ const projectRouter = express.Router();
 projectRouter.post("/addProject", addProject);
 projectRouter.get("/findProject/:projectId", findProject);
 projectRouter.get("/findAllProjects", findAllProjects);
-projectRouter.put("/updateProject/:projectId", updateProject);
+projectRouter.patch("/updateProject/:projectId", updateProject);
 
 module.exports = projectRouter;

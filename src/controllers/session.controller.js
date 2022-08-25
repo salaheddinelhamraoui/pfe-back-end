@@ -86,10 +86,30 @@ function updateSession(req, res) {
   }
 }
 
+function findSessionByProject(req, res) {
+  const { projectId } = req.params;
+  try {
+    Session.find({ project_id: ObjectId(projectId) }, (err, result) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.status(200).json({
+        message: "Sessions found",
+        result,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Invalide project ID",
+      error,
+    });
+  }
+}
 
 module.exports = {
   addSession,
   findSession,
   findAllSessions,
   updateSession,
+  findSessionByProject,
 };
