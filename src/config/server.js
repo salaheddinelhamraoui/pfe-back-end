@@ -24,11 +24,7 @@ app.use(bodyParser.json());
 
 // Dev Logginf Middleware
 if (process.env.NODE_ENV === "development") {
-  app.use(
-    cors({
-      origin: process.env.CLIENT_URL,
-    })
-  );
+  app.use(cors());
   app.use(morgan("dev"));
 }
 
