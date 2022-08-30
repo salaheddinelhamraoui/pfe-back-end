@@ -4,8 +4,8 @@ const Session = require("../models/session.model");
 const moment = require("moment");
 
 function getStatistic(_, res) {
-  const freelancers = User.find({ role: "FREELANCER" }).count().exec();
-  const companies = User.find({ role: "COMPANY" }).count().exec();
+  const freelancers = User.find({ role: "freelancer" }).count().exec();
+  const companies = User.find({ role: "company" }).count().exec();
   const projects = Project.find().count().exec();
   const sessions = Session.find({ state: "FINISHED" }).exec();
 
