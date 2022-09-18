@@ -17,6 +17,7 @@ const sessionSchema = new Schema({
   description: String,
   state: String,
   date: Date,
+  end_date: Date,
 });
 
 const Session = mongoose.model("Session", sessionSchema);

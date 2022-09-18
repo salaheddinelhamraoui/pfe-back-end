@@ -92,9 +92,57 @@ function updateProject(req, res) {
   }
 }
 
+function findProjectByCompanyId(req, res) {
+  const { companyId } = req.params;
+  try {
+    Project.find({ company_id: ObjectId(companyId) }, (err, result) => {
+      if (err) {
+        return res.status(400).json(err);
+      }
+      if (!result) {
+        return res.status(404).json({
+          message: "Projects Not found by ID :" + userId,
+          result,
+        });
+      }
+      return res.status(200).json({
+        message: "Projects found",
+        result,
+      });
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+function deleteProject(req, res) {
+  const { projectId } = req.params;
+  try {
+    Project.findByIdAndDelete(ObjectId(projectId), (err, result) => {
+      if (err) {
+        return res.status(400).json(err);
+      }
+      if (!result) {
+        return res.status(404).json({
+          message: "Project Not found by ID :" + projectId,
+          result,
+        });
+      }
+      return res.status(200).json({
+        message: "Project deleted",
+        result,
+      });
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
 module.exports = {
   addProject,
   findProject,
   findAllProjects,
   updateProject,
+  findProjectByCompanyId,
+  deleteProject,
 };
