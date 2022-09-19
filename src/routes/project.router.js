@@ -6,6 +6,7 @@ const {
   updateProject,
   findProjectByCompanyId,
   deleteProject,
+  restHours
 } = require("../controllers/project.controller");
 const projectRouter = express.Router();
 
@@ -15,5 +16,6 @@ projectRouter.get("/findProjectByCompanyId/:companyId", findProjectByCompanyId);
 projectRouter.get("/findAllProjects", findAllProjects);
 projectRouter.patch("/updateProject/:projectId", updateProject);
 projectRouter.delete("/deleteProject/:projectId", deleteProject);
+projectRouter.get("/restHours/:projectId", restHours);
 
 module.exports = projectRouter;
