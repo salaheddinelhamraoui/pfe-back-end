@@ -111,7 +111,7 @@ function findProjectByCompanyId(req, res) {
         message: "Projects found",
         result,
       });
-    });
+    }).populate("creator_id freelancer_id company_id");
   } catch (error) {
     return res.status(500).json(error);
   }
