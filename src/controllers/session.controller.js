@@ -37,7 +37,7 @@ function findSession(req, res) {
         message: "Session found",
         result,
       });
-    });
+    }).populate("project_id");
   } catch (error) {
     return res.status(400).json({
       message: "Invalide project ID",
@@ -115,7 +115,7 @@ function findSessionByProject(req, res) {
   }
 }
 
-function findSessionByUser(req, res) {
+function findSessionByCompany(req, res) {
   const { userId } = req.params;
   console.log("userId", userId);
 
@@ -148,7 +148,7 @@ function findSessionByUser(req, res) {
   }
 }
 
-function findSessionByUserToday(req, res) {
+function findSessionByCompanyToday(req, res) {
   const { userId } = req.params;
   console.log("userId", userId);
 
@@ -210,6 +210,6 @@ module.exports = {
   findAllSessions,
   updateSession,
   findSessionByProject,
-  findSessionByUser,
-  findSessionByUserToday,
+  findSessionByCompany,
+  findSessionByCompanyToday,
 };
