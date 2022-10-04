@@ -18,6 +18,14 @@ const sessionSchema = new Schema({
   state: String,
   date: Date,
   end_date: Date,
+  company_signature: {
+    type: String,
+    default: "",
+  },
+  freelancer_signature: {
+    type: String,
+    default: "",
+  },
 });
 
 const Session = mongoose.model("Session", sessionSchema);

@@ -7,6 +7,8 @@ const {
   findSessionByProject,
   findSessionByCompany,
   findSessionByCompanyToday,
+  addSignatureCompany,
+  addSignatureFreelancer
 } = require("../controllers/session.controller");
 const sessionRouter = express.Router();
 
@@ -17,5 +19,8 @@ sessionRouter.get("/findSessionByUserId/:userId", findSessionByCompany);
 sessionRouter.get("/findSessionByUserIdToday/:userId", findSessionByCompanyToday);
 sessionRouter.get("/findAllSessions", findAllSessions);
 sessionRouter.patch("/updateSession/:sessionId", updateSession);
+sessionRouter.post("/addSignatureCompany", addSignatureCompany);
+sessionRouter.post("/addSignatureFreelancer", addSignatureFreelancer);
+
 
 module.exports = sessionRouter;

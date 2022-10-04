@@ -1,6 +1,8 @@
 const Session = require("../models/session.model");
 const Project = require("../models/project.model");
 const { ObjectId } = require("mongodb");
+const { cloudinary } = require("../utils/cloudinary");
+const formidable = require("formidable");
 
 function addSession(req, res) {
   const { creator_id, freelancer_id } = req.body;
@@ -93,6 +95,109 @@ function updateSession(req, res) {
   } catch (error) {
     return res.status(500).json(error);
   }
+}
+
+function addSignatureCompany(req, res) {
+  const form = formidable({ multiples: true });
+  try {
+    form.parse(req, async (err, fields, file) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      const { sessionId = "" } = fields;
+      const { document = "" } = file;
+
+      const uploadedResponse = await cloudinary.uploader.upload(document.filepath,
+        {
+          upload_preset: "avatars",
+        }
+      );
+
+      let fileURL = uploadedResponse.url
+
+      Session.findByIdAndUpdate(
+        ObjectId(sessionId),
+        {
+          $set: {
+            company_signature: fileURL,
+          },
+        },
+        { returnDocument: "after" },
+        (err, result) => {
+          if (err) {
+            return res.status(400).json(err);
+          }
+          if (!result) {
+            return res.status(404).json({
+              message: "Session Not found by ID :" + sessionId,
+              result,
+            });
+          }
+          return res.status(200).json({
+            massege: "Upadated with success!",
+            result,
+          });
+        }
+      );
+    });
+
+  }
+  catch (error) {
+    return res.status(500).json(error);
+  }
+
+}
+function addSignatureFreelancer(req, res) {
+  const form = formidable({ multiples: true });
+  try {
+    form.parse(req, async (err, fields, file) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      const { sessionId = "" } = fields;
+      const { document = "" } = file;
+
+      const uploadedResponse = await cloudinary.uploader.upload(document.filepath,
+        {
+          upload_preset: "avatars",
+        }
+      );
+
+      let fileURL = uploadedResponse.url
+
+      Session.findByIdAndUpdate(
+        ObjectId(sessionId),
+        {
+          $set: {
+            freelancer_signature: fileURL,
+          },
+        },
+        { returnDocument: "after" },
+        (err, result) => {
+          if (err) {
+            return res.status(400).json(err);
+          }
+          if (!result) {
+            return res.status(404).json({
+              message: "Session Not found by ID :" + sessionId,
+              result,
+            });
+          }
+          return res.status(200).json({
+            massege: "Upadated with success!",
+            result,
+          });
+        }
+      );
+    });
+
+  }
+  catch (error) {
+    return res.status(500).json(error);
+  }
+
 }
 
 function findSessionByProject(req, res) {
@@ -212,4 +317,6 @@ module.exports = {
   findSessionByProject,
   findSessionByCompany,
   findSessionByCompanyToday,
+  addSignatureCompany,
+  addSignatureFreelancer
 };
