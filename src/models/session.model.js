@@ -15,7 +15,10 @@ const sessionSchema = new Schema({
     required: true,
   },
   description: String,
-  state: String,
+  state: {
+    type: String,
+    default: "Pending",
+  },
   date: Date,
   end_date: Date,
   company_signature: {

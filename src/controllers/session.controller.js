@@ -108,19 +108,21 @@ function addSignatureCompany(req, res) {
       const { sessionId = "" } = fields;
       const { document = "" } = file;
 
-      const uploadedResponse = await cloudinary.uploader.upload(document.filepath,
+      const uploadedResponse = await cloudinary.uploader.upload(
+        document.filepath,
         {
           upload_preset: "avatars",
         }
       );
 
-      let fileURL = uploadedResponse.url
+      let fileURL = uploadedResponse.url;
 
       Session.findByIdAndUpdate(
         ObjectId(sessionId),
         {
           $set: {
             company_signature: fileURL,
+            state: "Signed By Company",
           },
         },
         { returnDocument: "after" },
@@ -141,12 +143,9 @@ function addSignatureCompany(req, res) {
         }
       );
     });
-
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(500).json(error);
   }
-
 }
 function addSignatureFreelancer(req, res) {
   const form = formidable({ multiples: true });
@@ -159,19 +158,21 @@ function addSignatureFreelancer(req, res) {
       const { sessionId = "" } = fields;
       const { document = "" } = file;
 
-      const uploadedResponse = await cloudinary.uploader.upload(document.filepath,
+      const uploadedResponse = await cloudinary.uploader.upload(
+        document.filepath,
         {
           upload_preset: "avatars",
         }
       );
 
-      let fileURL = uploadedResponse.url
+      let fileURL = uploadedResponse.url;
 
       Session.findByIdAndUpdate(
         ObjectId(sessionId),
         {
           $set: {
             freelancer_signature: fileURL,
+            state: "Signed By Freelancer",
           },
         },
         { returnDocument: "after" },
@@ -192,12 +193,9 @@ function addSignatureFreelancer(req, res) {
         }
       );
     });
-
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(500).json(error);
   }
-
 }
 
 function findSessionByProject(req, res) {
@@ -318,5 +316,5 @@ module.exports = {
   findSessionByCompany,
   findSessionByCompanyToday,
   addSignatureCompany,
-  addSignatureFreelancer
+  addSignatureFreelancer,
 };
