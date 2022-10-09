@@ -250,6 +250,38 @@ function findSessionByCompany(req, res) {
     });
   }
 }
+function findSessionByFreelancer(req, res) {
+  const { userId } = req.params;
+  console.log("userId", userId);
+
+  try {
+    Project.find({ freelancer_id: ObjectId(userId) }, (err, result) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      const filterdResult = result.map((project) => {
+        return {
+          project_id: project._id,
+        };
+      });
+      Session.find({ $or: filterdResult }, (err, result) => {
+        if (err) {
+          return res.status(500).json(err);
+        }
+        return res.status(200).json({
+          message: "Sessions found",
+          result,
+        });
+      });
+    });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(400).json({
+      message: "Invalide project ID",
+      error,
+    });
+  }
+}
 
 function findSessionByCompanyToday(req, res) {
   const { userId } = req.params;
@@ -257,6 +289,61 @@ function findSessionByCompanyToday(req, res) {
 
   try {
     Project.find({ company_id: ObjectId(userId) }, (err, result) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      const filterdResult = result.map((project) => {
+        return {
+          project_id: project._id,
+        };
+      });
+      var startDate = new Date();
+      startDate.setSeconds(0);
+      startDate.setHours(0);
+      startDate.setMinutes(0);
+
+      var endDate = new Date();
+      endDate.setSeconds(59);
+      endDate.setMinutes(59);
+      endDate.setHours(23);
+
+      Session.find(
+        {
+          $and: [
+            { $or: filterdResult },
+            {
+              date: { $gte: startDate },
+            },
+            {
+              date: { $lte: endDate },
+            },
+          ],
+        },
+        (err, result) => {
+          if (err) {
+            return res.status(500).json(err);
+          }
+          return res.status(200).json({
+            message: "Sessions found",
+            result,
+          });
+        }
+      );
+    });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(400).json({
+      message: "Invalide project ID",
+      error,
+    });
+  }
+}
+function findSessionByFreelancerToday(req, res) {
+  const { userId } = req.params;
+  console.log("userId", userId);
+
+  try {
+    Project.find({ freelancer_id: ObjectId(userId) }, (err, result) => {
       if (err) {
         return res.status(500).json(err);
       }
@@ -317,4 +404,6 @@ module.exports = {
   findSessionByCompanyToday,
   addSignatureCompany,
   addSignatureFreelancer,
+  findSessionByFreelancerToday,
+  findSessionByFreelancer,
 };

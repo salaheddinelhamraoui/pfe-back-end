@@ -6,13 +6,18 @@ const {
   updateProject,
   findProjectByCompanyId,
   deleteProject,
-  restHours
+  restHours,
+  findProjectByFreelancerId,
 } = require("../controllers/project.controller");
 const projectRouter = express.Router();
 
 projectRouter.post("/addProject", addProject);
 projectRouter.get("/findProject/:projectId", findProject);
 projectRouter.get("/findProjectByCompanyId/:companyId", findProjectByCompanyId);
+projectRouter.get(
+  "/findProjectByFreelancerId/:freelancerId",
+  findProjectByFreelancerId
+);
 projectRouter.get("/findAllProjects", findAllProjects);
 projectRouter.patch("/updateProject/:projectId", updateProject);
 projectRouter.delete("/deleteProject/:projectId", deleteProject);

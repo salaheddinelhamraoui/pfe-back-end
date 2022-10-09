@@ -1,7 +1,7 @@
 const Project = require("../models/project.model");
 const Session = require("../models/session.model");
 const { ObjectId } = require("mongodb");
-var moment = require('moment');
+var moment = require("moment");
 
 function addProject(req, res) {
   const { creator_id, freelancer_id, company_id } = req.body;
@@ -116,6 +116,28 @@ function findProjectByCompanyId(req, res) {
     return res.status(500).json(error);
   }
 }
+function findProjectByFreelancerId(req, res) {
+  const { freelancerId } = req.params;
+  try {
+    Project.find({ freelancer_id: ObjectId(freelancerId) }, (err, result) => {
+      if (err) {
+        return res.status(400).json(err);
+      }
+      if (!result) {
+        return res.status(404).json({
+          message: "Projects Not found by ID :" + userId,
+          result,
+        });
+      }
+      return res.status(200).json({
+        message: "Projects found",
+        result,
+      });
+    }).populate("creator_id freelancer_id company_id");
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
 
 function deleteProject(req, res) {
   const { projectId } = req.params;
@@ -140,9 +162,7 @@ function deleteProject(req, res) {
   }
 }
 
-
 function restHours(req, res) {
-
   const { projectId } = req.params;
   try {
     Session.find({ project_id: ObjectId(projectId) }, (err, result) => {
@@ -151,28 +171,27 @@ function restHours(req, res) {
       }
       let diffTime = 0;
       result.map((item) => {
-          const date = moment(item.date);
-          const endDate = moment(item.end_date);
-         diffTime += endDate.diff(date, 'minutes');
-      })
+        const date = moment(item.date);
+        const endDate = moment(item.end_date);
+        diffTime += endDate.diff(date, "minutes");
+      });
       diffTime = diffTime / 60;
 
       Project.findById(ObjectId(projectId), (err, result) => {
-      if (err) {
-        return res.status(400).json(err);
-      }
-      if (!result) {
-        return res.status(404).json({
-          message: "Project Not found by ID :" + projectId,
-          result,
+        if (err) {
+          return res.status(400).json(err);
+        }
+        if (!result) {
+          return res.status(404).json({
+            message: "Project Not found by ID :" + projectId,
+            result,
+          });
+        }
+        return res.status(200).json({
+          consumedTime: diffTime,
+          totalSessionsTime: result.total_session_hours,
         });
-      }
-      return res.status(200).json({
-        consumedTime : diffTime,
-        totalSessionsTime: result.total_session_hours,
       });
-    })
-      
     });
   } catch (error) {
     return res.status(400).json({
@@ -182,7 +201,6 @@ function restHours(req, res) {
   }
 }
 
-
 module.exports = {
   addProject,
   findProject,
@@ -190,5 +208,6 @@ module.exports = {
   updateProject,
   findProjectByCompanyId,
   deleteProject,
-  restHours
+  restHours,
+  findProjectByFreelancerId,
 };
